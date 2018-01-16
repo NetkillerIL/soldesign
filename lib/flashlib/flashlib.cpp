@@ -1,20 +1,18 @@
 #include <SPI.h>
-#include <stdint.h>
-#include "flashlib.h"
-uint8_t READ_BYTE_FLASH = 0x03;
+//#include <stdint.h>
+#include <flashlib.h>
 
-uint8_t WRITE_ENABLE = 0x06;
-uint8_t WRITE_BYTE_FLASH = 0x02;
-
-uint8_t BLOCK_ERASE_8 = 0x20;
-uint8_t BLOCK_ERASE_32 = 0x52;
-uint8_t BLOCK_ERASE_64 = 0xD8;
-uint8_t CHIP_ERASE = 0xC7;
-
-uint8_t DEEP_POWERDOWN = 0xB9;
-uint8_t RESUME_FROM_POWERDOWN = 0xAB;
-uint8_t READ_MANU_ID = 0x9F;
-uint8_t STATUS_REG_1 = 0x05;
+const uint8_t READ_BYTE_FLASH = 0x03;
+const uint8_t WRITE_ENABLE = 0x06;
+const uint8_t WRITE_BYTE_FLASH = 0x02;
+const uint8_t BLOCK_ERASE_8 = 0x20;
+const uint8_t BLOCK_ERASE_32 = 0x52;
+const uint8_t BLOCK_ERASE_64 = 0xD8;
+const uint8_t CHIP_ERASE = 0xC7;
+const uint8_t DEEP_POWERDOWN = 0xB9;
+const uint8_t RESUME_FROM_POWERDOWN = 0xAB;
+const uint8_t READ_MANU_ID = 0x9F;
+const uint8_t STATUS_REG_1 = 0x05;
 /* global variables*/
 uint8_t info[3]; //holdes info of manufacturer
 uint8_t b1; //char result - debugging purposes
@@ -159,6 +157,7 @@ void write_array (uint32_t addr, uint8_t * w1, uint16_t arr_len) {
 uint8_t erase_block (uint32_t addr, uint16_t block_size ) {
     uint8_t blockSizeOp;
     switch (block_size) {
+	    // must change to 4 - 8 is wrong 
         case 8 :
             blockSizeOp = BLOCK_ERASE_8;
             break;
@@ -213,93 +212,3 @@ void print_page (uint8_t * buf) {
   Serial.println(" ");
   Serial.println("done!");
 }
-
-
-/* set arduino prerequisits*/
-//void setup() {
-//
-//}
-
-//void loop() {
-//  if (Serial.available() > 0) {
-//    switch(Serial.read()) {
-//      case 'z':
-//        Serial.println("please enter a sentence: ");
-//        if (Serial.available() > 0 ) {
-//          Serial.println(Serial.readString());
-//        }
-//        break;
-//      case 'r':
-//          Serial.println("please provide amount of pages");
-//          for ( int i = 1; i < 50; i++) {
-//            read_page(i,1);
-//            Serial.print("Page number : ");
-//            Serial.println(i);
-//            for (int j = 0; j < 256; j++) {
-//                Serial.println(readBuf[j]);
-//        }
-//        }
-//        break;
-//      case 'w':
-//        write_array();
-//        break;
-//      case 'e':
-//        uint8_t succ_block_size;
-//        succ_block_size = erase_block(0x000000, 512);
-//        Serial.print(succ_block_size);
-//        Serial.print(" Kbyte");
-//        Serial.println(" erased");
-//        break;
-//      case 'i':
-//        read_manu_id(info);
-//        Serial.print(info[1]);
-//        break;
-//      case 'd':
-//        Serial.println("Entering deep-sleep mode");
-//        deep_powerdown_on();
-//        break;
-//      case 'c':
-//        deep_powerdown_off();
-//        Serial.println("Resuming from deep-sleep mode");
-//        break;
-//      /*test 1 and 2*/
-//      case 't':
-//
-//    }
-//  }
-//}
-/*read from memory a certain amount of pages.
-  2048 pages of 256 byte are presented in the memory
-  the access to memory is via page number
-  i.e a number between 1 and 2048, the function
-  calculates the corresponding memory*/
-
-/*
-void read_mem (uint32_t page, uint16_t pages_num) {
-  uint32_t pageAddr = ( page -1 ) << 8;
-  Serial.print("page address starts at: ");
-  Serial.println(pageAddr);
-
-  digitalWrite(pinSS, HIGH);
-  digitalWrite(pinSS, LOW);
-
-  SPI.transfer(READ_BYTE_FLASH);
-  SPI.transfer((uint8_t)(pageAddr >> 16));
-  SPI.transfer((uint8_t)(pageAddr >> 8));
-  SPI.transfer((uint8_t)(pageAddr >> 0));
-
-  for (int cnt = 0 ; cnt < 2; cnt++) {
-    readBuf[cnt*8] = SPI.transfer(0);
-    Serial.print(readBuf[cnt], HEX);
-    if(cnt % 16 == 0) {
-      Serial.println(" ");
-    }
-  }
-
-  Serial.println(" ");
-  Serial.println("done");
-  digitalWrite(pinSS, HIGH);
-  not_busy();
-
-}
-*/
